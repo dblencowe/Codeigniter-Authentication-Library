@@ -1,8 +1,10 @@
 <?php
 /* 
- * Quick Authentication Library
- * For use with Codeigniter
- * Developed by David Blencowe, http://www.syntaxmonster.net
+ * @Package Quick Authentication Library
+ * @author David Blencowe
+ * @link http://www.syntaxmonster.net
+ * @version 1.0.0
+ * @since Version 1.0.0
  */
 
 class Quickauth
