@@ -129,7 +129,7 @@ class Quickauth
      */
     function encrypt($data)
     {
-        return md5($data);
+        return sha1($data);
     }
 
 	/**
