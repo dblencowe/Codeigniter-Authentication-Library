@@ -1,4 +1,5 @@
 <?php
+
 /* 
  * @Package Quick Authentication Library
  * @author David Blencowe
@@ -6,7 +7,6 @@
  * @version 1.0.0
  * @since Version 1.0.0
  */
-
 class Quickauth
 {
 	var $CI;
@@ -26,7 +26,6 @@ class Quickauth
 	{
          self::__construct();
 	}
-
 
     /**
      * Used for restricting users to certain controllers and functions
@@ -68,7 +67,6 @@ class Quickauth
      * @param String $username
      * @return TRUE/FALSE
      */
-
     function _username_exists($username)
     {
         $this->CI->db->where('username',  $username);
@@ -120,6 +118,7 @@ class Quickauth
        $string = trim($string);
        return strlen($string);
     }
+
     /**
      * This function will encrypt any data passed to it.
      * It is primarily used for encrypting passwords before
@@ -196,8 +195,8 @@ class Quickauth
 
             redirect($redirect);
         }
-
     }
+
     /**
      * Function for registering users
      * Accepts three arguements from a form {Username, Password, Email}
@@ -209,7 +208,6 @@ class Quickauth
      * @param String $password
      * @param String $email
      */
-
     function register($username, $password, $email)
     {
         if($this->check_string_length($username) > 30)
@@ -251,7 +249,6 @@ class Quickauth
      */
     function retrieve_password($userdata)
     {
-
         $email['newline'] = "\r\n";
         $this->CI->load->library('email', $email);
 
@@ -261,6 +258,7 @@ class Quickauth
           $new_password = random_string('alnum', 9);
           $this->CI->db->where('username', $userdata);
           $this->CI->db->update('password', $this->encrypt($new_password));
+
           $query = $this->CI->db->get('users');
           $result = $query->row();
 
@@ -298,8 +296,7 @@ class Quickauth
             show_error('This username is not registered');
           }
           else
-          {     
-
+          {   
               $message = "Hey there, \r\n";
               $message .= "You or someone posing as you recently requested a new password at";
               $message .= $this->CI->config->item->base_url()."\r\n";
