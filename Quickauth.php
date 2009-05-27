@@ -128,7 +128,14 @@ class Quickauth
      */
     function encrypt($data)
     {
-        return sha1($data);
+        if($this->CI->config->item('encryption_key') !== NULL)
+        {
+            return sha1($this->CI->config->item('encryption_key').$data);
+        }
+        else
+        {
+            show_error('Please set an encryption key in your config file.');
+        }
     }
 
 	/**
