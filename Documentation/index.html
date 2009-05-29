@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>QuickAuth Documentation</title>
+
+	<style type='text/css' media='all'>@import url('./css.css');</style>
+	<link rel='stylesheet' type='text/css' media='all' href='css.css' />
+
+	<meta http-equiv='expires' content='-1' />
+	<meta http-equiv= 'pragma' content='no-cache' />
+	<meta name='robots' content='all' />
+
+</head>
+
+<body>
+
+<!-- START NAVIGATION -->
+	<div id="nav"><div id="nav_inner"></div></div>
+	<div id="nav2"><a name="top">&nbsp;</a></div>
+	<div id="masthead">
+	<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+	<tr>
+	<td><h1>QuickAuth Codeigniter Authentication Library</h1></td>
+	<td id="breadcrumb_right"><a href="http://www.codeingiter.com">Codeigniter Userguide</a></td>
+	</tr>
+	</table>
+	</div>
+	<!-- END NAVIGATION -->
+
+	<!-- START BREADCRUMB -->
+	<table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+	<tr>
+	<td id="breadcrumb">
+	<a href="http://syntaxmonster.net/code/">SyntaxMonster</a> &nbsp;&#8250;&nbsp;
+	QuickAuth
+	</td>
+	<td id="searchbox"><form method="get" action="http://www.google.com/search"><input type="hidden" name="as_sitesearch" id="as_sitesearch" value="example.com/user_guide/" />Search Project User Guide&nbsp; <input type="text" class="input" style="width:200px;" name="q" id="q" size="31" maxlength="255" value="" />&nbsp;<input type="submit" class="submit" name="sa" value="Go" /></form></td>
+	</tr>
+
+	</table>
+	<!-- END BREADCRUMB -->
+
+	<br clear="all" />
+
+
+	<!-- START CONTENT -->
+	<div id="content">
+
+
+	<h1>QuickAuth Authentication Library</h1>
+
+	<p>QuickAuth is an extremely flexible and easy to use authentication library for Codeigniter</p>
+		
+	<p>Features:</p>
+
+	<ul>
+		<li>Login</li>
+		<li>Logout</li>
+		<li>Logged In</li>
+		<li>Register</li>
+		<li>Restrict</li>
+		<li>Retrieve Lost Password</li>
+	</ul>
+
+	<h2>Initializing The Library</h2>
+
+	<p>Within a text string, <var>highlight variables</var> using <var>&lt;var&gt;&lt;/var&gt;</var> tags, and <dfn>highlight code</dfn> using the <dfn>&lt;dfn&gt;&lt;/dfn&gt;</dfn> tags.</p>
+	<p>
+		Like most other classes in CodeIgniter, the FTP class is initialized in your controller using the <dfn>$this->load->library('quickauth')</dfn> function:
+		<code>
+			$this->load->library('quickauth');
+		</code>
+		Once loaded Quickauth functions will be available using: $this->quickauth
+	</p>
+
+	<h2>Usage Examples</h2>
+	
+	<p>In this example the library checks if the user is logged in and returns a boolean.</p>
+	
+	<pre>
+		$this->load->library('quickauth');
+
+		if ($this->quickauth->logged_in() === TRUE)
+		{
+			// Show the Username of the logged in user.
+			echo $this->session->userdata('username');
+		}
+	</pre>
+		
+	<h2>Login</h2>
+
+	<h3>$this->quickauth->login()</h3>
+	<p>The Login function accepts 3 arguements which correspond to the username and password from a submitted form and a target location to redirect too.</p>
+	<code>$this->quickauth->login('<var>$username</var>, <var>$password</var>, <var>$redirect = NULL</var>')</code>
+
+	<h2>Logout</h2>
+
+	<h3>$this->quickauth->logout()</h3>
+	<p>Logs the user out by destroying all session variables.</p>
+	<code>$this->quickauth->logout()</code>
+	
+	<h2>Logged In</h2>
+
+	<h3>$this->quickauth->logged_in()</h3>
+	<p>Checks if the user is logged in and then returns a Boolean result (TRUE/FALSE) to indicate whether the user is logged in or not.</p>
+	<code>$this->quickauth->logged_in()</code>
+	
+	<h2>Register</h2>
+
+	<h3>$this->quickauth->register()</h3>
+	<p>The Register function accepts 3 variables for username, password and email from a form that has been submitted to the controller.</p>
+	<code>$this->quickauth->register('<var>$username</var>, <var>$password</var>, <var>$email</var>')</code>
+	
+	<h2>Restrict</h2>
+
+	<h3>$this->quickauth->restrict()</h3>
+	<p>Used for restricting users access to certain controllers and functions. The variable passed should be the Group ID of the group you wish to have access to the page. That group and above will then be able to access the page. Other users will see <b>You do not have sufficient privileges to access this page.</b></p>
+	<code>$this->quickauth->restrict('<var>$group_id</var>')</code>
+	
+	<h2>Retrieve Password</h2>
+
+	<h3>$this->quickauth->retrieve_password()</h3>
+	<p>This function will email a user a newly generated nine character alpha numeric password. The submitted variable should be a username or email submitted from a form.</p>
+	<code>$this->quickauth->retrieve_password('<var>$data</var>')</code>
+
+	</div>
+	<!-- END CONTENT -->
+
+
+	<div id="footer">
+	<p>
+		<a href="http://www.syntaxmonster.net">SyntaxMonster Home</a>
+	</p>
+	<p>
+		<a href="http://codeigniter.com">CodeIgniter</a> &nbsp;&middot;&nbsp; Copyright &#169; 2009-2010 &nbsp;&middot;&nbsp; <a href="http://www.syntaxmonster.net/">David Blencowe.</a>
+	</p>
+	</div>
+
+</body>
+</html>
