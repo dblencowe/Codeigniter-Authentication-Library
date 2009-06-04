@@ -191,15 +191,22 @@ class Quickauth
             $this->CI->db->where('username', $username);
             $query = $this->CI->db->get('users');
             $row = $query->row_array();
-            $data = array(
-                            'username' => $username,
-                            'user_id' => $row['id'],
-                            'group' => $row['groupid'],
-                            'logged_in' => TRUE
-                          );
-            $this->CI->session->set_userdata($data);
+            if ($row['activated'] === 0)
+            {
+                show_error('This account has not been activated yet');
+            }
+            else
+            {
+                $data = array(
+                                'username' => $username,
+                                'user_id' => $row['id'],
+                                'group' => $row['groupid'],
+                                'logged_in' => TRUE
+                              );
+                $this->CI->session->set_userdata($data);
 
-            redirect($redirect);
+                redirect($redirect);
+            }
         }
     }
 
