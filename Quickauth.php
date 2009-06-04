@@ -254,6 +254,26 @@ class Quickauth
             return TRUE;
         }
     }
+    
+    /**
+     * This function is for activating a user account.
+     * You must supply a valid username from the database.
+     * @param String $username 
+     */
+    function activate_user($username)
+    {
+        if ($userid !== NULL)
+        {
+            $this->CI->db->where('username', $username);
+            $this->CI->db->update('activated', '1');
+
+            return TRUE;
+        }
+        else
+        {
+            return 0;
+        }
+    }
 
     /**
     * This function will email a user a newly generated password
