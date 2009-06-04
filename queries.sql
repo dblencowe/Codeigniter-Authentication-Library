@@ -1,8 +1,16 @@
 CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `username` varchar(30) NOT NULL,
-  `password` varchar(40) NOT NULL,
-  `email` varchar(60) NOT NULL,
-  `ip` varchar(15) NOT NULL,
+  `group_id` tinyint(3) unsigned NOT NULL DEFAULT '0',
+  `username` varchar(15) NOT NULL DEFAULT '',
+  `password` varchar(40) NOT NULL DEFAULT '',
+  `email` varchar(40) NOT NULL DEFAULT '',
+  `activated` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8 AUTO_INCREMENT=59 ;
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `id` int(11) NOT NULL,
+  `title` varchar(20) NOT NULL DEFAULT '',
+  `description` varchar(100) NOT NULL DEFAULT '',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
