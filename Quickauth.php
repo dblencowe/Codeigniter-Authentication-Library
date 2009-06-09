@@ -1,5 +1,5 @@
 <?php
-/* 
+/*
 * @Package Quick Authentication Library
 * @author David Blencowe
 * @link http://www.syntaxmonster.net
@@ -10,6 +10,10 @@ class Quickauth
 {
     var $CI;
     var $_username;
+    var $_table = array(
+                    'users' => 'users',
+                    'groups' => 'groups'
+                    );
 
     function __construct()
     {
@@ -29,19 +33,19 @@ class Quickauth
     /**
     * Used for restricting users to certain controllers and functions
     * by their user level.
-    * @param Int $group
+    * @param String $restrict_to Name of the group
     * @return TRUE/Error
     */
-    function restrict($restrict_to = NULL)
+    function restrict( $restrict_to = NULL, $redirect_to_login = FALSE )
     {
-        if ($restrict_to !== NULL)
+        if ( $restrict_to !== NULL)
         {
             if ($this->CI->session->userdata('logged_in') == TRUE)
             {
                 $this->CI->db->where('name', $restrict_to);
-                $query = $this->CI->db->get('groups');
+                $query = $this->CI->db->get($this->_table['groups']);
                 $level = $query->row_array();
-                $users_level = $this->CI->session->userdata('group');
+                $users_level = $this->CI->session->userdata('group_id');
 
                 if ($users_level >= $level['id'])
                 {
@@ -49,14 +53,25 @@ class Quickauth
                 }
                 else
                 {
-                    show_error('You do not have sufficient privileges to access this page.');
+                    show_error('You do not have sufficient privileges to access this page. <a href="javascript:history.back();">back</a>');
+                }
+            }
+            else
+            {
+                if ($redirect_to_login == FALSE)
+                {
+                    show_error('You are not logged in. <a href="javascript:history.back();">back</a>');
+                }
+                else
+                {
+                    redirect($redirect_to_login);
                 }
             }
         }
         else
         {
             // Page locked to everyone
-            show_error('You cannot access this page');
+            show_error('You cannot access this page. <a href="javascript:history.back();">back</a>');
         }
     }
 
@@ -66,12 +81,13 @@ class Quickauth
     * @param String $username
     * @return TRUE/FALSE
     */
-    function _username_exists($username)
+    function _username_exists( $username )
     {
-        $this->CI->db->where('username',  $username);
-        $query = $this->CI->db->get('users');
+        $this->CI->db->where('username', $username);
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get($this->_table['users']);
 
-        if ($query->num_rows() <> 1)
+        if ($query->num_rows() !== 1)
         {
             return FALSE;
         }
@@ -90,13 +106,15 @@ class Quickauth
     * @param String $password
     * @return TRUE/FALSE
     */
-    function _check_correct_password($str)
+    function _check_correct_password( $password )
     {
+        $this->CI->db->select('password');
         $this->CI->db->where('username', $this->_username);
-        $query = $this->CI->db->get('users');
+        $this->CI->db->limit(1);
+        $query = $this->CI->db->get($this->_table['users']);
         $result = $query->row();
 
-        if ($result->password == $this->encrypt($str))
+        if ($result->password == $this->encrypt($password))
         {
             return TRUE;
         }
@@ -112,7 +130,7 @@ class Quickauth
     * @param String $string
     * @return Int
     */
-    function check_string_length($string)
+    function check_string_length( $string )
     {
         $string = trim($string);
         return strlen($string);
@@ -125,7 +143,7 @@ class Quickauth
     * @param String $data
     * @return String
     */
-    function encrypt($data)
+    function encrypt( $data )
     {
         if ($this->CI->config->item('encryption_key') !== NULL)
         {
@@ -133,7 +151,7 @@ class Quickauth
         }
         else
         {
-            show_error('Please set an encryption key in your config file.');
+            show_error('Please set an encryption key in your config file. <a href="javascript:history.back();">back</a>');
         }
     }
 
@@ -168,44 +186,47 @@ class Quickauth
     * @param String $password
     * @param String $redirect
     */
-    function login($username, $password, $redirect = NULL)
+    function login( $username, $password, $redirect = NULL )
     {
         if ($this->check_string_length($username) > 30)
         {
-            show_error('Usernames can be no longer than 30 characters');
+            show_error('Usernames can be no longer than 30 characters. <a href="javascript:history.back();">back</a>');
         }
         elseif ($this->_username_exists($username) !== TRUE)
         {
-            show_error('The username you provided does not exist');
+            show_error('The username you provided does not exist. <a href="javascript:history.back();">back</a>');
         }
         elseif ($this->check_string_length($password) > 32)
         {
-            show_error('Passwords can be no longer than 32 chracters');
+            show_error('Passwords can be no longer than 32 chracters. <a href="javascript:history.back();">back</a>');
         }
         elseif ($this->_check_correct_password($password) !== TRUE)
         {
-            show_error('You specified an incorrect password');
+            show_error('You specified an incorrect password. <a href="javascript:history.back();">back</a>');
         }
         else
         {
             $this->CI->db->where('username', $username);
-            $query = $this->CI->db->get('users');
+            $query = $this->CI->db->get($this->_table['users']);
             $row = $query->row_array();
             if ($row['activated'] === 0)
             {
-                show_error('This account has not been activated yet');
+                show_error('This account has not been activated yet. <a href="javascript:history.back();">back</a>');
             }
             else
             {
                 $data = array(
                                 'username' => $username,
                                 'user_id' => $row['id'],
-                                'group' => $row['groupid'],
+                                'group_id' => $row['group_id'],
                                 'logged_in' => TRUE
                               );
                 $this->CI->session->set_userdata($data);
 
-                redirect($redirect);
+                if ($redirect !== NULL )
+                {
+                    redirect($redirect);
+                }
             }
         }
     }
@@ -221,52 +242,53 @@ class Quickauth
     * @param String $password
     * @param String $email
     */
-    function register($username, $password, $email)
+    function register( $username, $password, $email )
     {
         if ($this->check_string_length($username) > 30)
         {
-            show_error('Usernames can be no longer than 30 characters');
+            show_error('Usernames can be no longer than 30 characters. <a href="javascript:history.back();">back</a>');
         }
         elseif ($this->_username_exists($username) === TRUE)
         {
-            show_error('The username you provided is already in the database');
+            show_error('The username you provided is already in the database. <a href="javascript:history.back();">back</a>');
         }
         elseif($this->check_string_length($password) > 32)
         {
-        show_error('Passwords can be no longer than 32 chracters');
+        show_error('Passwords can be no longer than 32 chracters. <a href="javascript:history.back();">back</a>');
         }
         elseif (!valid_email($email))
         {
-            show_error('The email you submitted is invalid');
+            show_error('The email you submitted is invalid. <a href="javascript:history.back();">back</a>');
         }
         else
         {
             $password = $this->encrypt($password);
 
             $data = array(
+                            "id" => '',
                             "username" => $username,
                             "password" => $password,
                             "email" => $email,
-                            "ip" => $this->CI->input->ip_address()
+                            //"ip" => $this->CI->input->ip_address()
                             );
 
-            $this->CI->db->insert('users', $data);
+            $this->CI->db->insert($this->_table['users'], $data);
             return TRUE;
         }
     }
-    
+
     /**
      * This function is for activating a user account.
      * You must supply a valid username from the database.
-     * @param String $username 
+     * @param String $username
      */
-    function activate_user($username)
+    function activate_user( $username )
     {
-        if ($userid !== NULL)
+        if ($username !== NULL)
         {
+            $this->CI->db->set( 'activated', 1 );
             $this->CI->db->where('username', $username);
-            $this->CI->db->update('activated', '1');
-
+            $this->CI->db->update($this->_table['users']);
             return TRUE;
         }
         else
@@ -280,7 +302,7 @@ class Quickauth
     * $userdata can be a password or an email submitted from a form
     * @param String $userdata
     */
-    function retrieve_password($userdata)
+    function retrieve_password( $userdata )
     {
         $email['newline'] = "\r\n";
         $this->CI->load->library('email', $email);
@@ -288,27 +310,29 @@ class Quickauth
         if (valid_email($userdata))
         {
             $this->CI->db->where('email', $userdata);
-            $new_password = random_string('alnum', 9);
-            $this->CI->db->where('username', $userdata);
-            $this->CI->db->update('password', $this->encrypt($new_password));
-
-            $query = $this->CI->db->get('users');
+            $this->CI->db->limit(1);
+            $query = $this->CI->db->get($this->_table['users']);
             $result = $query->row();
 
             if ($query->num_rows() !== 1)
             {
-                show_error('This email is not registered');
+                show_error('This email is not registered. <a href="javascript:history.back();">back</a>');
             }
             else
             {
+                $new_password = random_string('alnum', 9);
+                $this->CI->db->where('email', $userdata);
+                $this->CI->db->set('password', $this->encrypt($new_password));
+                $this->CI->db->update($table['users']);
+
                 $message = "Hey there, \r\n";
                 $message .= "You or someone posing as you recently requested a new password at";
-                $message .= $this->CI->config->item->base_url()."\r\n";
+                $message .= base_url()."\r\n";
                 $message .= "Your randomly generated password is: ".$new_password."\r\n";
-                $message .= "Thanks, \r\n".$this->CI->config->item->base_url();
+                $message .= "Thanks, \r\n".base_url();
 
                 $this->email->from($this->CI->config->site_email(), 'Automated Password Recovery');
-                $this->email->to($result->email());
+                $this->email->to($result->email);
 
                 $this->email->subject('Password Recovery');
                 $this->email->message($message);
@@ -318,26 +342,31 @@ class Quickauth
         }
         else
         {
-            $new_password = random_string('alnum', 9);
             $this->CI->db->where('username', $userdata);
-            $this->CI->db->update('password', $this->encrypt($new_password));
-            $query = $this->CI->db->get('users');
+            $this->CI->db->limit(1);
+            $query = $this->CI->db->get($this->_table['users']);
             $result = $query->row();
 
             if ($query->num_rows() !== 1)
             {
-                show_error('This username is not registered');
+                show_error('This username is not registered. <a href="javascript:history.back();">back</a>');
             }
             else
             {
+
+                $new_password = random_string('alnum', 9);
+                $this->CI->db->where('username', $userdata);
+                $this->CI->db->set('password', $this->encrypt($new_password));
+                $this->CI->db->update($table['users']);
+
                 $message = "Hey there, \r\n";
                 $message .= "You or someone posing as you recently requested a new password at";
-                $message .= $this->CI->config->item->base_url()."\r\n";
+                $message .= base_url()."\r\n";
                 $message .= "Your randomly generated password is: ".$new_password."\r\n";
-                $message .= "Thanks, \r\n".$this->CI->config->item->base_url();
+                $message .= "Thanks, \r\n".base_url();
 
                 $this->email->from($this->CI->config->site_email(), 'Automated Password Recovery');
-                $this->email->to($result->email());
+                $this->email->to($result->email);
 
                 $this->email->subject('Password Recovery');
                 $this->email->message($message);
