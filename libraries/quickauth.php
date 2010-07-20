@@ -75,8 +75,8 @@ class Quickauth {
 
 	foreach ($type as $var) {
 	    $array = array (
-		    'user_id' => $id,
-		    'group_id' => $var
+		    'userid' => $id,
+		    'groupid' => $var
 	    );
 
 	    $this->ci->db->insert($this->_tables['group_memberships'], $array);
@@ -167,11 +167,11 @@ class Quickauth {
 	}
 
 	$userid = $this->ci->session->userdata('userid');
-	$ci->db->where('user_id', $id);
+	$ci->db->where('userid', $id);
 	$q = $ci->db->get($this->_tables['group_memberships']);
 	$groups = $q->result_array();
 	foreach ($groups as $grp) {
-	    $ci->db->where('id', $grp['group_id']);
+	    $ci->db->where('id', $grp['groupid']);
 	    $q = $ci->db->get($this->_tables['groups']);
 	    $var = $q->row_array();
 	    $user_groups[] = $var['name'];
