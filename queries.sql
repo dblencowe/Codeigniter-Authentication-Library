@@ -18,4 +18,4 @@ CREATE TABLE IF NOT EXISTS `group_memberships` (
     `userid` int(11) NOT NULL,
     `groupid` int(11) NOT NULL,
     PRIMARY KEY(`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
