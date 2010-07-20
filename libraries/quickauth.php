@@ -14,19 +14,19 @@ class Quickauth {
 
     var $ci;
     var $_tables = array (
-	'users' => 'users',
-	'groups' => 'groups',
-	'group_memberships' => 'group_memberships'
+	    'users' => 'users',
+	    'groups' => 'groups',
+	    'group_memberships' => 'group_memberships'
     );
     var $login = "authentication/login";
 
     var $locale = array (
-	'invalid_login_credentials' => '',
-	'succesful_registration' => '',
-	'logged_out' => '',
-	'guest_name' => '',
-	'failed_restrict' => '',
-	'failed_restrict_nologin' => '',
+	    'invalid_login_credentials' => '',
+	    'succesful_registration' => '',
+	    'logged_out' => '',
+	    'guest_name' => '',
+	    'failed_restrict' => '',
+	    'failed_restrict_nologin' => '',
     );
 
     function __construct () {
@@ -46,7 +46,7 @@ class Quickauth {
 	if ($q->num_rows() > 0) {
 	    $a = $q->row_array();
 	    $session_data = array (
-		'userid' => $a['id']
+		    'userid' => $a['id']
 	    );
 
 	    $this->ci->session->set_userdata($session_data);
@@ -75,8 +75,8 @@ class Quickauth {
 
 	foreach ($type as $var) {
 	    $array = array (
-		'user_id' => $id,
-		'group_id' => $var
+		    'user_id' => $id,
+		    'group_id' => $var
 	    );
 
 	    $this->ci->db->insert($this->_tables['group_memberships'], $array);
@@ -100,7 +100,7 @@ class Quickauth {
     /*
      * @to-do: Build a password recovery function for next version, using CI
      * Email library against a global config
-     */
+    */
     function recover_password ($user) {
 
     }
@@ -154,13 +154,13 @@ class Quickauth {
 	/* if the argument value is false the page should not be restricted,
 	 * Useful for excluding functions from controllers restricted at a construct
 	 * level
-	 */
+	*/
 	if ($group == "false") return;
 
 	/* Anything past here requires at least some form of login so redirect
 	 * if user is not logged in. If $group is null will only allow logged
 	 * in users to access the page
-	 */
+	*/
 	if (!$this->logged_in()) {
 	    ui_set_error($this->locale['failed_restrict_nologin']);
 	    redirect($this->login);
@@ -170,8 +170,7 @@ class Quickauth {
 	$ci->db->where('user_id', $id);
 	$q = $ci->db->get($this->_tables['group_memberships']);
 	$groups = $q->result_array();
-	foreach ($groups as $grp)
-	{
+	foreach ($groups as $grp) {
 	    $ci->db->where('id', $grp['group_id']);
 	    $q = $ci->db->get($this->_tables['groups']);
 	    $var = $q->row_array();
