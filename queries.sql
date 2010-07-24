@@ -2,7 +2,7 @@ CREATE TABLE IF NOT EXISTS `users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(15) NOT NULL DEFAULT '',
   `password` varchar(45) NOT NULL DEFAULT '',
-  `fullname` varchar(60) NOT NULL DEFAULT '',
+  `firstname` varchar(60) NOT NULL DEFAULT '',
   `lastname` varchar(60) NOT NULL DEFAULT '',
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;

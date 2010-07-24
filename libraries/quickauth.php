@@ -3,7 +3,7 @@
  * @name QuickAuth
  * @author Dave Blencowe
  * @author_url http://www.daveblencowe.com
- * @version 2.0
+ * @version 2.1
  * @license Free for use and modification, without credit given
  *
  * Quickauth authentication library for Codeigniter. Quickauth aims to provide
@@ -193,7 +193,8 @@ class Quickauth {
      * @return <string> The encrypted hash
      */
     function encrypt ($string) {
-	$string = sha1($string.$ci->config->item('encryption_key'));
+	if (empty ($this->ci->config->item('encryption_key'))) show_error('You must set the encryption key in your config file for Quickauth to function');
+	$string = sha1($string.$this->ci->config->item('encryption_key'));
 	return $string;
     }
 
