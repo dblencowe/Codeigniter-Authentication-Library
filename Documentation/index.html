@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+    <head>
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>QuickAuth V2.0 Documentation</title>
+
+	<style type='text/css' media='all'>@import url('./style.css');</style>
+	<link rel='stylesheet' type='text/css' media='all' href='./style.css' />
+
+	<meta http-equiv='expires' content='-1' />
+	<meta http-equiv= 'pragma' content='no-cache' />
+	<meta name='robots' content='all' />
+
+    </head>
+
+    <body>
+
+	<!-- START NAVIGATION -->
+	<div id="nav"><div id="nav_inner"></div></div>
+	<div id="nav2"><a name="top">&nbsp;</a></div>
+	<div id="masthead">
+	    <table cellpadding="0" cellspacing="0" border="0" style="width:100%">
+		<tr>
+		    <td><h1>QuickAuth Authentication Library V2.1</h1></td>
+		</tr>
+	    </table>
+	</div>
+	<!-- END NAVIGATION -->
+	<br clear="all" />
+	<!-- START CONTENT -->
+	<div id="content">
+	    <h1>Installling The Library</h1>
+	    <p>The QuickAuth authentication library is extremely easy to install and use for Codeigniter users of varying different experience levels.</p>
+	    <p>In order to install the library download the code from <a href="#">GitHub</a> and then extract the library and helper folders to your application folder within your existing Codeigniter installation.</p>
+	    <p>There are two methods of loading QuickAuth and Ui Helper, the first is to load them individually using <dfn>$this->load->library('quickauth');</dfn> and <dfn>$this->load->helper('ui');</dfn> in any controller that you wish to use them.</p>
+	    <p>The second methid is to add them to the library and helper arrays located in <var>./application/config/autoload.php</var> by adding the quickauth and ui handles repectively to each array. I recommend this approach as an authentication library if used often throughout most applications and loading it individually could become quite annoying on larger applications.</p>
+
+	    <h1>Encrypt</h1>
+	    <p>Encrypt a string (usually a password) ready for use within the library. Uses SHA1 encryption against the Codeigniter encryption key</p>
+	    <code>$this->quickauth->encrypt($string);</code>
+
+	    <h1>Logged In</h1>
+	    <p>Check to see if a user is logged in. If not then don't return anything.</p>
+	    <code>$this->quickauth->logged_in();</code>
+
+	    <h1>Login</h1>
+	    <p>Log a user in using the supplied username and password combination.</p>
+	    <code>$this->quickauth->login($username/$email, $password);</code>
+
+	    <h1>Logout</h1>
+	    <p>Log a user out by destroying their session, then set a ui message and return.</p>
+	    <code>$this->quickauth->logout();</code>
+
+	    <h1>Register</h1>
+	    <p>Register a user. Data should be supplied in an array format using the structure specified below.</p>
+	    <pre>
+		$userdata = array(
+		    'username' => $username,
+		    'password' => $password,
+		    'firstname' => $firstname,
+		    'lastname' => $lastname
+		);
+
+		$this->quickauth->register($userdata);
+	    </pre>
+
+	    <h1>Restrict</h1>
+	    <p>Restrict a controller to a user group, logged in users, or exclude the function from an existing restriction.</p>
+	    <code>$this->quickauth->restrict($group_name);</code>
+
+	    <h1>User</h1>
+	    <p>Get the data on a user from the user table. Also parse their full name into $data['name'] for convinience.</p>
+	    <code>$this->quickauth->user();</code>
+	    <code>$this->quickauth->user($user_id);</code>
+
+	</div>
+	<!-- END CONTENT -->
+
+
+	<div id="footer">
+	    <a href="#top">Top of Page</a>&nbsp;&nbsp;&nbsp;&middot;&nbsp;&nbsp;
+	    <a href="http://www.daveblencowe.com">QuickAuth Home</a>
+	</div>
+
+    </body>
+</html>
