@@ -3,7 +3,7 @@
  * @name QuickAuth
  * @author Dave Blencowe
  * @author_url http://www.daveblencowe.com
- * @version 2.1
+ * @version 2.2
  * @license Free for use and modification, without credit given
  *
  * Quickauth authentication library for Codeigniter. Quickauth aims to provide
@@ -233,7 +233,7 @@ class Quickauth
 		return $groups;
 	}
 
-	/*
+	/**
 	 * Add a group to the database
 	 *
 	 * @param <string> Group Name
@@ -251,7 +251,7 @@ class Quickauth
 		
 	}
 
-	/*
+	/**
 	 * Check if a group exists in the system
 	 *
 	 * @param <string> Group name
@@ -266,7 +266,7 @@ class Quickauth
 		}
 	}
 
-	/*
+	/**
 	 * Get the unique identifier for a group
 	 *
 	 * @param <string> Group name
