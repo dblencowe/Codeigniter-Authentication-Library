@@ -221,12 +221,12 @@ class Quickauth
 	function get_groups($id)
 	{
 		$this->ci->db->where('userid', $id);
-		$q = $this->ci->db->get('group_memberships');
+		$q = $this->ci->db->get($this->_tables['group_memberships']);
 		$rst = $q->result_array();
 		$groups = array();
 		foreach ($rst as $k=>$v) {
 			$this->ci->db->where('id', $v['groupid']);
-			$q = $this->ci->db->get('groups');
+			$q = $this->ci->db->get($this->_tables['groups']);
 			$r = $q->row_array();
 			$groups[] = $r['title'];
 		}
@@ -243,7 +243,7 @@ class Quickauth
 	{
 		$data['title'] = $title;
 		if (!$this->group_exists($title)) {
-			$this->ci->db->insert('groups', $data);
+			$this->ci->db->insert($this->_tables['groups'], $data);
 			return $this->ci->db->insert_id();
 		} else {
 			return $this->get_group_id($title);
@@ -260,7 +260,7 @@ class Quickauth
 	function group_exists($title)
 	{
 		$this->ci->db->where('title', $title);
-		$q = $this->ci->db->get('groups');
+		$q = $this->ci->db->get($this->_tables['groups']);
 		if ($q->num_rows() > 0) {
 			return true;
 		}
@@ -275,7 +275,7 @@ class Quickauth
 	function get_group_id($title)
 	{
 		$this->ci->db->where('title', $title);
-		$qry = $this->ci->db->get('groups');
+		$qry = $this->ci->db->get($this->_tables['groups']);
 		return $qry->row()->id;
 	}
 }
