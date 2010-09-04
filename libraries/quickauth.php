@@ -207,8 +207,9 @@ class Quickauth
 	 */
 	function encrypt($string)
 	{
-		if (empty ($this->ci->config->item('encryption_key'))) show_error('You must set the encryption key in your config file for Quickauth to function');
-		$string = sha1($string.$this->ci->config->item('encryption_key'));
+		$key = $this->ci->config->item('encryption_key');
+		if (empty($key)) show_error('You must set the encryption key in your config file for Quickauth to function');
+		$string = sha1($string.$key);
 		return $string;
 	}
 
