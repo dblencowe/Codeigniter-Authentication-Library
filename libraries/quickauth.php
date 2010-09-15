@@ -3,7 +3,7 @@
  * @name QuickAuth
  * @author Dave Blencowe
  * @author_url http://www.daveblencowe.com
- * @version 2.2
+ * @version 2.5
  * @license Free for use and modification, without credit given
  *
  * Quickauth authentication library for Codeigniter. Quickauth aims to provide
@@ -28,7 +28,13 @@ class Quickauth
 		'guest_name' => '',
 		'failed_restrict' => '',
 		'failed_restrict_nologin' => '',
+		'failed_password_reset' => '',
+		'successful_password_reset' => ''
 	);
+	
+	var $_email_view = "authentication/email";
+	
+	var $system_email = "me@example.com";
 
 	function __construct()
 	{
@@ -104,13 +110,57 @@ class Quickauth
 		return true;
 	}
 
-	/*
-     	* @to-do: Build a password recovery function for next version, using CI
-     	* Email library against a global config
-    	*/
+	/**
+	 * Reset a users password and email them the new password. Remember to set the $email_view
+	 * variable and build a functioning view. To show the password in the email use echo $pass;
+	 * WARNING: This function expects the users username to be in email format
+	 * 
+	 * @param <string> The users username
+	 * @return <string> The new password
+	 */
 	function recover_password($user)
 	{
+		$chars = "abcdefghijkmnopqrstuvwxyz023456789";
 
+	    srand((double)microtime()*1000000);
+	    $i = 0;
+	    $pass = '';
+	    while ($i <= 12) {
+	        $num = rand() % 33;
+	        $tmp = substr($chars, $num, 1);
+	        $pass = $pass . $tmp;
+	        $i++;
+	    }
+	    
+	    $newpass = $pass;
+	    $encrypted_pass = $this->encrypt($pass);
+	    
+	    // Update the users password
+	    $this->ci->db->where('username', $user);
+	    $q = $this->ci->db->get($this->_tables['users']);
+	    if ($q->num_rows() > 0) {
+	    	$user_id = $q->row_array()->id;
+	    	$user = $this->user($user_id);
+	    	
+	    	$this->ci->db->where('id', $user_id);
+	    	$this->ci->db->set('password', $encrypted_pass);
+	    	$this->ci->db->update($this->_tables['users']);
+	    	
+	    	// Email the users
+	    	$this->ci->load->library('email');
+	    	$this->ci->email->to($user['username'], $user['firstname']." ".$user['lastname']);
+	    	$this->ci->email->from($this->system_email);
+	    	$this->ci->email->subject('Password Recovery');
+	    	$data['pass'] = $pass;
+	    	$message = $this->load->view($this->_email_view, $data, TRUE);
+	    	$this->ci->email->message($message);
+	    	$this->ci->email->send();
+	    	ui_set_message($this->locale['successful_password_reset']);
+	    	return $pass;
+	    } else {
+	    	ui_set_error($this->locale['failed_password_reset']);
+	    }
+		return false;
 	}
 
 	/**
