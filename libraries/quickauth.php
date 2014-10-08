@@ -242,7 +242,7 @@ class Quickauth
 
 		if (!in_array($group, $user_groups)) {
 			ui_set_error($this->locale['failed_restrict']);
-			die();
+			redirect($this->login);
 		}
 
 		return;
